@@ -11,11 +11,14 @@
 #define Ref_H
 #include <string> 
 #include <stdlib.h>
+#include <vector>
 using namespace std;
 
 // GetNextToken returns a token from str, which contains all characters
 // up to the first character from delimiters
 string GetNextToken(string& str, const string& delimiters);
+
+extern vector<string> bibleBooks;
 
 class Ref {
 private:

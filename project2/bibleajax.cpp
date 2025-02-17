@@ -53,8 +53,9 @@ int main() {
 
   // Convert and check input data
   bool validInput = false;
+  int chapterNum = 0;
   if (chapter != cgi.getElements().end()) {
-	 int chapterNum = chapter->getIntegerValue();
+	 chapterNum = chapter->getIntegerValue();
 	 if (chapterNum > 150) {
 		 cout << "<p>The chapter number (" << chapterNum << ") is too high.</p>" << endl;
 	 }
@@ -66,8 +67,9 @@ int main() {
   }
   
   bool validVInput = false;
+  int verseNum = 0;
   if (verse != cgi.getElements().end()) {
-	 int verseNum = verse->getIntegerValue();
+	 verseNum = verse->getIntegerValue();
 	 if (verseNum > 176) {
 		 cout << "<p>The verse number (" << verseNum << ") is too high.</p>" << endl;
 	 }
@@ -77,45 +79,97 @@ int main() {
 	 else
 		 validVInput = true;
   }
-  /*
-  vector<string>::iterator iter = bibleBooks.begin();
-  for (iter; iter < bibleBooks.end(); iter++)
-  {
-	  if (bibleBooks.at(iter) == book)
-	  {
-		  
-	  }
+  
+  bool validBook = false;
+  int bookNum = 0;
+  string bookName = "Not real book";
+  if (book != cgi.getElements().end()) {
+	 bookNum = book->getIntegerValue();
+	 if (bookNum > 66)
+     {
+		 cout << "<p>That book doesn't exist.</p>" << endl;
+     }
+	 else if (bookNum < 1)
+	 {
+		 cout << "<p>That book doesn't exist.</p>" << endl;
+	 }
+     else
+     {
+		 validBook = true;
+		 bookName = bibleBooks[bookNum];
+	 }
   }
-  */
+  
   
   /* TO DO: OTHER INPUT VALUE CHECKS ARE NEEDED ... but that's up to you! */
 
   /* TO DO: PUT CODE HERE TO CALL YOUR BIBLE CLASS FUNCTIONS
    *        TO LOOK UP THE REQUESTED VERSES
    */
-int bookToFind, chapToFind, verseToFind;
-bookToFind = book->getIntegerValue();
-chapToFind = chapter->getIntegerValue();
-verseToFind = verse->getIntegerValue();
-Ref refToFind = Ref(bookToFind, chapToFind, verseToFind);
-LookupResult status;
-Bible webBible("/home/class/csc3004/Bibles/web-complete");
-Verse findVerse = webBible.lookup(refToFind, status);
+	int bookToFind, chapToFind, verseToFind;
+	bookToFind = book->getIntegerValue();
+	chapToFind = chapter->getIntegerValue();
+	verseToFind = verse->getIntegerValue();
+	Ref refToFind = Ref(bookToFind, chapToFind, verseToFind);
+	LookupResult status;
+	Bible webBible("/home/class/csc3004/Bibles/web-complete");
+	Verse findVerse = webBible.lookup(refToFind, status);
+	string e = webBible.error(status);
+	if (e == "Book doesn't exist.")
+	{
+		validBook = false;
+		cout << "<b>" << e << "</b>" << endl;
+	}
+	else if (e == "Chapter doesn't exist.")
+	{
+		validInput = false;
+		cout << "<b>" << e << "</b>" << endl;
+	}
+	else if (e == "Verse doesn't exist.")
+	{
+		validVInput = false;
+		cout << "<b>" << e << "</b>" << endl;
+	}
+	else if (e == "Incorrect input.")
+	{
+		validBook = false;
+		validInput = false;
+		validVInput = false;
+		cout << "<b>" << e << "</b>" << endl;
+	}
   /* SEND BACK THE RESULTS
    * Finally we send the result back to the client on the standard output stream
    * in HTML text format.
    * This string will be inserted as is inside a container on the web page, 
    * so we must include HTML formatting commands to make things look presentable!
    */
-  if (validInput && validVInput) {
+  if (validInput && validVInput && validBook) {
 	cout << "Search Type: <b>" << **st << "</b>" << endl;
 	cout << "<p>Your result: "
-		 << **book << " " << **chapter << ":" << **verse 
-		 << "<em> " << **nv
+		 << bookName << " " << chapterNum << ":" << verseNum 
+		 << "<em> " 
 		 << findVerse.getVerse() << "</em></p>" << endl;
+		 
+    int numVerses = 1;
+    if (nv != cgi.getElements().end())
+    {
+	  numVerses = nv->getIntegerValue();
+	  if (numVerses > 1)				// if asked for more than 1 verse
+		{
+			for (int i = 0; i < numVerses - 1; i++)
+			{
+				findVerse = webBible.nextVerse(status);
+				bookNum = findVerse.getRef().getBook();
+				bookName = bibleBooks[bookNum];
+				chapterNum = findVerse.getRef().getChap();
+				verseNum = findVerse.getRef().getVerse();
+				cout << bookName << " " << chapterNum << ":" << verseNum 
+				<< "<em> " 
+				<< findVerse.getVerse() << "</em></p>" << endl;
+			}
+		}
+    }
   }
-  else {
-	  cout << "<p>Invalid Input: <em>report the more specific problem.</em></p>" << endl;
-  }
+  
   return 0;
 }
