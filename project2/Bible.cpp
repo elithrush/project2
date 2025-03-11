@@ -11,12 +11,72 @@
 #include <stdlib.h>
 using namespace std;
 
-Bible::Bible() { // Default constructor
+// Constructor
+Bible::Bible() // constructor
+{ 
 	infile = "/home/class/csc3004/Bibles/web-complete";
+	buildIndex();
 }
 
-// Constructor – pass bible filename
-Bible::Bible(const string s) { infile = s; }
+void Bible::buildIndex() 
+{
+    ifstream file(infile);
+    if (!file) 
+	{
+        cerr << "Error opening Bible file!" << endl;
+        return;
+    }
+
+    string line3;
+    int byteOffset = 0;
+    
+    while (getline(file, line3)) 
+	{
+        Ref ref(line3);
+        index[ref] = byteOffset;
+        byteOffset = file.tellg();
+    }
+
+    file.close();
+}
+
+int Bible::getOffset(const Ref& ref) 
+{
+    if (index.empty()) 
+	{
+        buildIndex();
+    }
+
+    auto it = index.find(ref);
+    if (it != index.end()) 
+	{
+        return it->second;
+    } 
+	else 
+	{
+        return -1; // Not found
+    }
+}
+
+string Bible::getVerse(const Ref& ref) 
+{
+    auto it = index.find(ref);
+    if (it != index.end()) 
+	{
+        file.seekg(it->second);
+        string verseText;
+        getline(file, verseText);
+        return verseText;
+    }
+    return ""; // Verse not found
+}
+
+Ref Bible::getNextRef(const Ref& ref) 
+{
+    Ref nextRef = ref;
+    nextRef.increment();  // Increment book/chapter/verse
+    return nextRef;
+}
 
 // REQUIRED: lookup finds a given verse in this Bible
 Verse Bible::lookup(Ref ref, LookupResult& status) { 
@@ -28,45 +88,26 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 	                // that is constructed from a line in the file.
 					
 	//get line, make into verse, compare created ref with ref to be found
-	if (!instream.is_open())
-	{
-		instream.open(infile, ifstream::in);
-	}
-	string line;
-	Verse search;
 	
-	if (ref.getBook() > 66)			// if book doesn't exist
-		{
-			status = NO_BOOK;
-			return aVerse;
-		}
-		
-	while (!instream.eof())			// while it's not the end of the Bible file
-	{
-		getline(instream, line);
-		search = Verse(line);
-		
-		if (search.getRef() == ref)			// if the searched verse reference = the reference asked for
-		{
-			status = SUCCESS;
-			return search;
-		} 
-		else if (ref.getBook() < search.getRef().getBook())			// if chapter doesn't exist
-		{
-			status = NO_CHAPTER;
-			return aVerse;
-		}
-		else if (ref.getChap() < search.getRef().getChap() && ref.getBook() == search.getRef().getBook())			// if verse doesn't exist
-		{
-			status = NO_VERSE;
-			return aVerse;
-		}
-		else					// anything else
-		{
-			status = OTHER;
-		}
-	}
-    return(aVerse);
+	auto it = index.find(ref);
+    if (it == index.end()) {
+        status = NO_VERSE;
+        return Verse();
+    }
+
+    instream.open(infile);
+    if (!instream.is_open()) {
+        status = OTHER;
+        return Verse();
+    }
+
+    instream.seekg(it->second);
+    string line;
+    getline(instream, line);
+    instream.close();
+
+    status = SUCCESS;
+    return Verse(line);
 	
 }
 

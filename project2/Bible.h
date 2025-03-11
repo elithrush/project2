@@ -16,6 +16,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <map>
 using namespace std;
 
 // status codes to be returned when looking up a reference
@@ -28,10 +29,11 @@ class Bible {	// A class to represent a version of the bible
    bool isOpen;			// true if file is open
    // OPTIONAL: you may add variables to keep track of
    // the current line and/or reference when scanning the file
-
+   
+   map <Ref, int> index;
+   
  public:
    Bible();	// Default constructor
-   Bible(const string s); // Constructor – pass name of bible file
    
    // REQUIRED: Find and return a verse in this Bible, given a reference
    Verse lookup(const Ref ref, LookupResult& status);
@@ -40,11 +42,22 @@ class Bible {	// A class to represent a version of the bible
    // If the file is not open, open the file and return the first verse.
    Verse nextVerse(LookupResult& status);
    
+   int getOffset(const Ref& ref);
+   string getVerse(const Ref& ref);
+   Ref getNextRef(const Ref& ref);
+   
    // Information functions (REQUIRED)
    // Return an error message string to describe status
    string error(LookupResult status);
    // Show the name of the bible file on cout
    void display();
+   
+   void buildIndex();
+   int getIndexSize() const { return index.size(); }
+   int getLastOffset() const { return index.empty() ? -1 : index.rbegin()->second; }
+   int getOffsetForRef(const Ref& ref) const {
+        auto it = index.find(ref);
+        return (it != index.end()) ? it->second : -1;
    
    // OPTIONAL: Return the reference after the given parameter ref
    Ref next(const Ref ref, LookupResult& status);

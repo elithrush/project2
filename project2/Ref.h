@@ -34,7 +34,7 @@ public:
    // REQUIRED Comparison: determine if two references are equal
    bool operator==(const Ref);
    // OPTIONAL: < and > comparisons for Ref objects might also be useful
-   
+   bool operator<(const Ref r) const;
    // REQUIRED: Display the reference on cout, example output: John 3:16
    void display();
    // Your version of display should show the book name
