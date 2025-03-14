@@ -43,7 +43,7 @@ class Bible {	// A class to represent a version of the bible
    Verse nextVerse(LookupResult& status);
    
    int getOffset(const Ref& ref);
-   string getVerse(const Ref& ref);
+   
    Ref getNextRef(const Ref& ref);
    
    // Information functions (REQUIRED)
@@ -58,7 +58,7 @@ class Bible {	// A class to represent a version of the bible
    int getOffsetForRef(const Ref& ref) const {
         auto it = index.find(ref);
         return (it != index.end()) ? it->second : -1;
-   
+   }
    // OPTIONAL: Return the reference after the given parameter ref
    Ref next(const Ref ref, LookupResult& status);
    // OPTIONAL: Return the reference before the given parameter ref

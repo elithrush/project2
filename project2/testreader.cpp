@@ -1,8 +1,19 @@
-#include <iostream>
-#include <cstdlib>
-#include "Bible.h"
 #include "Ref.h"
+#include "Verse.h"
+#include "Bible.h" 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
 
+/*#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include "Bible.h"
+#include "Ref.h"*/
 using namespace std;
 
 int main(int argc, char* argv[]) 
@@ -19,7 +30,7 @@ int main(int argc, char* argv[])
 	}
 
     string bibleFile = "/home/class/csc3004/Bibles/web-complete";
-    Bible bible(bibleFile);
+    Bible bible;
 	
     if (argc > 3) 
 	{
@@ -36,22 +47,25 @@ int main(int argc, char* argv[])
 		}
 
         Ref ref(book, chapter, verse);
-
-        for (int i = 0; i < count; ++i) 
+		LookupResult status;		
+		Verse verseText = bible.lookup(ref, status);
+		//string text = verseText.getVerse();
+		
+        if (status == SUCCESS)			// if the verse was found
 		{
-            string verseText = bible.lookup(ref, status);
-            
-            if (!verseText.empty()) 
+			verseText.display();
+			cout << endl;
+		
+			if (count > 1)				// if asked for more than 1 verse
 			{
-                cout << ref << " - " << verseText << endl;
-                ref = ref.next();
-            } 
-			else 
-			{
-                cout << "Verse not found for " << ref << "!" << endl;
-                break;
-            }
-        }
+				for (int i = 0; i < count - 1; i++)
+				{
+					verseText = bible.nextVerse(status);
+					verseText.display();
+					cout << endl;
+				}
+			}
+		}
     } 
 	else 
 	{

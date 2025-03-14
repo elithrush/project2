@@ -12,7 +12,7 @@
 using namespace std;
 
 // Constructor
-Bible::Bible() // constructor
+Bible::Bible() 
 { 
 	infile = "/home/class/csc3004/Bibles/web-complete";
 	buildIndex();
@@ -58,25 +58,14 @@ int Bible::getOffset(const Ref& ref)
     }
 }
 
-string Bible::getVerse(const Ref& ref) 
-{
-    auto it = index.find(ref);
-    if (it != index.end()) 
-	{
-        file.seekg(it->second);
-        string verseText;
-        getline(file, verseText);
-        return verseText;
-    }
-    return ""; // Verse not found
-}
 
-Ref Bible::getNextRef(const Ref& ref) 
-{
-    Ref nextRef = ref;
-    nextRef.increment();  // Increment book/chapter/verse
-    return nextRef;
-}
+
+//Ref Bible::getNextRef(const Ref& ref) 
+//{
+//    Ref nextRef = ref;
+//    nextRef.increment();  // Increment book/chapter/verse
+//    return nextRef;
+//}
 
 // REQUIRED: lookup finds a given verse in this Bible
 Verse Bible::lookup(Ref ref, LookupResult& status) { 
@@ -104,7 +93,7 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
     instream.seekg(it->second);
     string line;
     getline(instream, line);
-    instream.close();
+    
 
     status = SUCCESS;
     return Verse(line);

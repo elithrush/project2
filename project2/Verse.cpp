@@ -1,8 +1,9 @@
 // Verse class function definitions
 // Computer Science, MVNU
 
-#include "Verse.h"
+
 #include <iostream>
+#include "Verse.h"
 using namespace std;
 
 Verse::Verse() {  	// Default constructor

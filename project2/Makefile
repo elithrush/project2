@@ -12,11 +12,11 @@
 # and open the bibleajax.html link.
 
 # TO DO: Must replace "username" by your username
-USER= elithrush
+USER=elithrush
 
 # Use GNU C++ compiler with C++11 standard
-CC= g++
-CFLAGS= -g -std=c++11
+CC=g++
+CFLAGS=-std=c++11
 
 #all:	bibleajax.cgi PutCGI PutHTML
 all: testreader
@@ -25,7 +25,7 @@ all: testreader
 # compiled classes from Project 1 to be linked into the executable program
 #bibleajax.cgi:	bibleajax.o
 #		$(CC) $(CFLAGS) -o bibleajax.cgi bibleajax.o Bible.o Verse.o Ref.o -lcgicc
-		# -l option is necessary to link with cgicc library
+#		# -l option is necessary to link with cgicc library
 
 # main program to handle AJAX/CGI requests for Bible references
 #bibleajax.o:	bibleajax.cpp

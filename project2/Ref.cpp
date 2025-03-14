@@ -94,33 +94,33 @@ bool Ref::operator==(const Ref r)
 
 // OPTIONAL: define < and > comparisons
 bool Ref::operator<(const Ref r) const {
-    if (book != r.book) {
-        return book < r.book;
+    if (this->book != r.book) {
+        return this->book < r.book;
     }
-    if (chapter != r.chapter) {
-        return chapter < r.chapter;
+    if (this->chap != r.chap) {
+        return this->chap < r.chap;
     }
-    return verse < r.verse;
+    return this->verse < r.verse;
 }
 
-void Ref::increment() 
-{
-    if (verse < getMaxVerse(book, chapter)) 
-	{
-        verse++;
-    } 
-	else if (chapter < getMaxChapter(book)) 
-	{
-        chapter++;
-        verse = 1;
-    } 
-	else if (book < MAX_BOOKS) 
-	{ 
-        book++;
-        chapter = 1;
-        verse = 1;
-    }
-}
+//void Ref::increment() 
+//{
+//    if (this->verse < getMaxVerse(r.book, r.chap)) 
+//	{
+//        this.verse++;
+//    } 
+//	else if (this->chap < getMaxChapter(r.book)) 
+//	{
+//        this->chap++;
+//        this->verse = 1;
+//    } 
+//	else if (this->book < MAX_BOOKS) 
+//	{ 
+//        this->book++;
+//        this->chap = 1;
+//        this->verse = 1;
+//    }
+//}
 // TO DO: modify display function to show book name instead of book number
 void Ref::display() { 	// Display Reference
     cout << bibleBooks.at(book) << " " << chap << ":" << verse;
