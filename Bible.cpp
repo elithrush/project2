@@ -101,12 +101,12 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 			status = SUCCESS;
 			return search;
 		} 
-		else if (foundRef.getBook() == ref.getBook() && ref.getChap() < foundRef.getChap())			// if chapter doesn't exist
+		else if (foundRef.getBook() == ref.getBook() && ref.getChap() != foundRef.getChap())			// if chapter doesn't exist
 		{
 			status = NO_CHAPTER;
 			return aVerse;
 		}
-		else if (foundRef.getBook() == ref.getBook() && foundRef.getChap() == ref.getChap() && ref.getVerse() < foundRef.getVerse())			// if verse doesn't exist
+		else if (foundRef.getBook() == ref.getBook() && foundRef.getChap() == ref.getChap() && ref.getVerse() != foundRef.getVerse())			// if verse doesn't exist
 		{
 			status = NO_VERSE;
 			return aVerse;
