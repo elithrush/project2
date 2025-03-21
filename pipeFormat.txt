@@ -1,0 +1,2 @@
+send: bookNum chapterNum verseNum amountOfVerses (optional)
+receive: reference + verse
