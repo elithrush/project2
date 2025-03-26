@@ -35,6 +35,7 @@ class Bible {	// A class to represent a version of the bible
    
  public:
    Bible();	// Default constructor
+   Bible(string bib);
    
    // REQUIRED: Find and return a verse in this Bible, given a reference
    Verse lookup(const Ref ref, LookupResult& status);

@@ -19,6 +19,12 @@ Bible::Bible()
 	buildIndex();
 }
 
+Bible::Bible(string bib)
+{
+	infile = bib;
+	buildIndex();
+}
+
 void Bible::buildIndex() 
 {
     ifstream file(infile);

@@ -18,27 +18,27 @@ USER=elithrush
 CC=g++
 CFLAGS=-std=c++11
 
-#all:	bibleajax.cgi PutCGI PutHTML
-all: testreader
+all:	client.cgi PutCGI PutHTML
+#all: testreader
 
 # TO DO: For bibleajax.cgi, add dependencies to include
 # compiled classes from Project 1 to be linked into the executable program
-#bibleajax.cgi:	bibleajax.o
-#		$(CC) $(CFLAGS) -o bibleajax.cgi bibleajax.o Bible.o Verse.o Ref.o -lcgicc
-#		# -l option is necessary to link with cgicc library
+client.cgi:	client.o fifo.o
+		$(CC) $(CFLAGS) -o client.cgi client.o Bible.o Verse.o Ref.o fifo.o -lcgicc
+		# -l option is necessary to link with cgicc library
 
 # main program to handle AJAX/CGI requests for Bible references
-#bibleajax.o:	bibleajax.cpp
-#		$(CC) $(CFLAGS) -c bibleajax.cpp
+client.o:	client.cpp fifo.h
+		$(CC) $(CFLAGS) -c client.cpp
 
 # TO DO: copy targets to build classes from Project 1:
 # Bible.o, Ref.o, Verse.o
 
-testreader: testreader.o Bible.o Ref.o Verse.o fifo.o
-	$(CC) $(CFLAGS) -o testreader testreader.o Bible.o Ref.o Verse.o fifo.o
+server: server.o Bible.o Ref.o Verse.o fifo.o
+	$(CC) $(CFLAGS) -o server server.o Bible.o Ref.o Verse.o fifo.o
 
-testreader.o: testreader.cpp Bible.h Ref.h Verse.h fifo.h
-	$(CC) $(CFLAGS) -c testreader.cpp
+server.o: server.cpp Bible.h Ref.h Verse.h fifo.h
+	$(CC) $(CFLAGS) -c server.cpp
 	
 # Ref Object
 Ref.o : Ref.h Ref.cpp
@@ -55,19 +55,19 @@ Bible.o : Ref.h Verse.h Bible.h Bible.cpp
 fifo.o: fifo.cpp fifo.h 
 	$(CC) $(CFLAGS) -c fifo.cpp 
 
-#PutCGI:	bibleajax.cgi
-#		chmod 755 bibleajax.cgi
-#		cp bibleajax.cgi /var/www/html/class/csc3004/$(USER)/cgi-bin
-#
-#		echo "Current contents of your cgi-bin directory: "
-#		ls -l /var/www/html/class/csc3004/$(USER)/cgi-bin/
-#
-#PutHTML:
-#		cp bibleajax.html /var/www/html/class/csc3004/$(USER)
-#
-#		echo "Current contents of your HTML directory: "
-#		ls -l /var/www/html/class/csc3004/$(USER)
+PutCGI:	client.cgi
+		chmod 755 client.cgi
+		cp client.cgi /var/www/html/class/csc3004/$(USER)/cgi-bin
+
+		echo "Current contents of your cgi-bin directory: "
+		ls -l /var/www/html/class/csc3004/$(USER)/cgi-bin/
+
+PutHTML:
+		cp bibleindex.html /var/www/html/class/csc3004/$(USER)
+
+		echo "Current contents of your HTML directory: "
+		ls -l /var/www/html/class/csc3004/$(USER)
 
 clean:		
-#		rm *.o core bibleajax.cgi
-		rm -f *.o testreader
+		rm *.o core client.cgi
+#		rm -f *.o testreader
