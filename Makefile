@@ -18,7 +18,7 @@ USER=elithrush
 CC=g++
 CFLAGS=-std=c++11
 
-all:	client.cgi PutCGI PutHTML
+all:	server client.cgi PutCGI PutHTML
 #all: testreader
 
 # TO DO: For bibleajax.cgi, add dependencies to include

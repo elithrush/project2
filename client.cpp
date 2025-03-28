@@ -37,6 +37,12 @@ int main() {
    * so the response type is just plain text to insert into the web page.
    */
   cout << "Content-Type: text/plain\n\n";
+  string requestFifoName = "lookup_request";
+  string replyFifoName = "lookup_reply";
+  Fifo requestFifo(requestFifoName);
+  Fifo replyFifo(replyFifoName);
+  requestFifo.openwrite();
+  replyFifo.openread();
   
   Cgicc cgi;  // create object used to access CGI request data
 
@@ -48,12 +54,7 @@ int main() {
   form_iterator chapter = cgi.getElement("chapter");
   form_iterator verse = cgi.getElement("verse");
   form_iterator nv = cgi.getElement("num_verse");
-  
-  string requestFifoName = "lookup_request";
-  string replyFifoName = "lookup_reply";
-  Fifo requestFifo(requestFifoName);
-  Fifo replyFifo(replyFifoName);
-  
+    
   string serverRequest = " ";
   int bookRequest = book->getIntegerValue();
   int chapRequest = chapter->getIntegerValue();
@@ -62,6 +63,11 @@ int main() {
   
   serverRequest = to_string(bookRequest) + " " + to_string(chapRequest) + " " + to_string(verseRequest) + " " + to_string(numRequest);
   requestFifo.send(serverRequest);
+  string verseDisplay = replyFifo.recv();
+  cout << "<p>" + verseDisplay + "</p>" << endl; 
+  
+  requestFifo.fifoclose();
+  replyFifo.fifoclose();
   
   return 0;
 }

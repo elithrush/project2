@@ -40,24 +40,25 @@ int main()
         Ref ref(book, chapter, verse);
         LookupResult status;
         Verse verseText = bible.lookup(ref, status);
+		string response = "Nothing";
         
         if (status == SUCCESS) 
 		{
-            string response = verseText.getRef().getBookName().append(" ").append(to_string(verseText.getRef().getChap()).append(":").append(to_string(verseText.getRef().getVerse()).append(" ").append(verseText.getVerse())));
-            replyFifo.send(response);
+            response = verseText.getRef().getBookName().append(" ").append(to_string(verseText.getRef().getChap()).append(":").append(to_string(verseText.getRef().getVerse()).append(" ").append(verseText.getVerse())));
             
             for (int i = 1; i < count; i++) 
 			{
                 verseText = bible.nextVerse(status);
                 if (status != SUCCESS) break;
-                response = verseText.getRef().getBookName().append(" ").append(to_string(verseText.getRef().getChap()).append(":").append(to_string(verseText.getRef().getVerse()).append(" ").append(verseText.getVerse())));
-                replyFifo.send(response);
-            }			
+                response = response.append("     ").append(verseText.getRef().getBookName().append(" ").append(to_string(verseText.getRef().getChap()).append(":").append(to_string(verseText.getRef().getVerse()).append(" ").append(verseText.getVerse()))));
+            }
+			replyFifo.send(response);
         } 
 		else 
 		{
             replyFifo.send(bible.error(status));
         }
+		cout << response << endl;	// Display verse being sent
     }
 	requestFifo.fifoclose();
 	replyFifo.fifoclose();
